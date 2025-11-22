@@ -1,0 +1,44 @@
+create files and folders
+-----------------------------------------------------------------------------------------------
+mkdir core
+mkdir core\parser
+mkdir core\detectors
+mkdir core\llm
+mkdir core\autofix
+mkdir core\report
+
+mkdir cli
+mkdir dashboard
+mkdir dashboard\ui
+mkdir github
+mkdir tests
+
+type nul > README.md
+type nul > requirements.txt
+type nul > cli\main.py
+type nul > core\parser\__init__.py
+type nul > core\parser\python_parser.py
+type nul > github\action.yml
+type nul > dashboard\app.py
+-----------------------------------------------------------------------------------------------
+activate virtual env
+
+
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1  
+------------------------------------------------------------------------------------------------
+run command 
+
+-------------------------------------------------------------------------------------------
+ python -m cli.main sample_project/example.py
+ ## -m is used cause module importing needs to know the hierarchy
+
+output --> 
+    Starting analysis for: sample_project/example.py
+    File loaded.
+    AST generated.
+
+    Basic Structure Analysis:
+     Found 4 function(s): calculate_discount, main_async_loop, __init__, get_user_data
+
+---------------------------------------------------------------------------------------------------------
