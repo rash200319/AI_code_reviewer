@@ -1,0 +1,25 @@
+{
+    "metadata": {
+        "file": "sample_project/example.py",
+        "total_issues": 2,
+        "tool_version": "0.1.0"
+    },
+    "issues": [
+        {
+            "type": "MagicNumber",
+            "line": 4,
+            "col": 14,
+            "value": 5,
+            "message": "Found magic number: 5. Consider using a named constant.",
+            "suggestion": "Remove the useless assignment. If the variable isn't used later, delete the line. If it's needed, restructure the code to avoid redundant assignment. This improves code clarity and efficiency."
+        },
+        {
+            "type": "MagicNumber",
+            "line": 9,
+            "col": 22,
+            "value": 100,
+            "message": "Found magic number: 100. Consider using a named constant.",
+            "suggestion": "Instead of assigning the result to a variable and returning it, directly return the expression. This avoids unnecessary variable assignment and improves code clarity."
+        }
+    ]
+}
