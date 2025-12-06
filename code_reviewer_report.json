@@ -11,7 +11,15 @@
             "col": 14,
             "value": 5,
             "message": "Found magic number: 5. Consider using a named constant.",
-            "suggestion": "Remove the useless assignment. If the variable isn't used later, delete the line. If it's needed, restructure the code to avoid redundant assignment. This improves code clarity and efficiency."
+            "suggestion": "Consider defining a named constant for the maximum number of retries, such as `MAX_RETRIES_ATTEMPTS` or `DEFAULT_RETRIES`, to make the code more readable and maintainable. This will also help to avoid hardcoding magic numbers throughout the codebase.",
+            "fix_patch": {
+                "constant_name": "MAGIC_NUM_4",
+                "constant_value": 5,
+                "line_to_replace": 4,
+                "old_code": "MAX_RETRIES = 5"
+            },
+            "autofix_status": "Prepared",
+            "autofix_description": "Define a new constant: `MAGIC_NUM_4 = 5` (at the top of the file).\nReplace the detected value `5` on line 4 with `MAGIC_NUM_4`."
         },
         {
             "type": "MagicNumber",
@@ -19,7 +27,15 @@
             "col": 22,
             "value": 100,
             "message": "Found magic number: 100. Consider using a named constant.",
-            "suggestion": "Instead of assigning the result to a variable and returning it, directly return the expression. This avoids unnecessary variable assignment and improves code clarity."
+            "suggestion": "To fix this MagicNumber smell, consider defining a named constant for the value 100, such as `HUNDRED_PERCENT`. This will make the code more readable and maintainable by clearly conveying the purpose of the value. Replace the magic number with the constant to improve code quality.",
+            "fix_patch": {
+                "constant_name": "MAGIC_NUM_9",
+                "constant_value": 100,
+                "line_to_replace": 9,
+                "old_code": "percentage /= 100"
+            },
+            "autofix_status": "Prepared",
+            "autofix_description": "Define a new constant: `MAGIC_NUM_9 = 100` (at the top of the file).\nReplace the detected value `100` on line 9 with `MAGIC_NUM_9`."
         }
     ]
 }

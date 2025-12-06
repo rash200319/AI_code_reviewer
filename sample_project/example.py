@@ -1,3 +1,8 @@
+# --- AUTO-GENERATED CONSTANTS ---
+MAGIC_NUM_4 = 5
+MAGIC_NUM_9 = 100
+# --------------------------------
+
 # ai-code-reviewer/sample_project/example.py
 import asyncio  ##lets you run multiple tasks concurrently
 # A constant (should NOT be detected as a function)

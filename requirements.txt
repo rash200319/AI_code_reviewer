@@ -1,0 +1,9 @@
+openai
+uvicorn
+fastapi
+pydantic
+httpx
+pytest
+asyncio
+click
+ollama
