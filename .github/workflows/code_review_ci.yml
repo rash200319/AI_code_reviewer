@@ -10,6 +10,12 @@ on:
     branches :
       - main
 
+# 1. Grant Write Permissions (Crucial for posting comments)
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   run_code_reviewer:
     runs-on: ubuntu-latest
