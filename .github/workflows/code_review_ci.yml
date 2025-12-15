@@ -35,7 +35,8 @@ jobs:
         fetch-depth: 0 # Fetch all history for full context
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: |
+        python cli/main.py
       with:
         python-version: '3.12' 
 
