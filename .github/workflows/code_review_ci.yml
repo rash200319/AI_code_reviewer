@@ -6,6 +6,9 @@ on:
   pull_request:
     branches:
       - main  # Trigger on PRs targeting the main branch
+  push :
+    branches :
+      - main
 
 jobs:
   run_code_reviewer:
