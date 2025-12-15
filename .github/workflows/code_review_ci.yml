@@ -1,0 +1,101 @@
+
+# .github/workflows/code_review_ci.yml
+name: AI Code Reviewer
+
+on:
+  pull_request:
+    branches:
+      - main  # Trigger on PRs targeting the main branch
+  push :
+    branches :
+      - main
+
+# 1. Grant Write Permissions (Crucial for posting comments)
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  run_code_reviewer:
+    runs-on: ubuntu-latest
+    
+    # We set environment variables at the job level so they are available to all steps
+    env:
+      # Use the secured GitHub Secret for the Groq Key
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      # This is crucial for Python to find the 'core' module when running cli/main.py
+      PYTHONPATH: ${{ github.workspace }}
+
+    steps:
+    - name: Checkout Code
+      # This step fetches the code of the branch being reviewed (the PR source branch)
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Fetch all history for full context
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12' 
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Install Groq and Streamlit/Pandas (required for dashboard/report parsing)
+        pip install groq pandas streamlit
+
+    - name: Run AI Code Review and Generate Report
+      id: review
+      # We use the path-corrected execution for reliability in CI
+      run: |
+        echo "Starting analysis for sample_project/example.py"
+        # The main command runs the analysis, LLM enrichment, and prepares the fix data
+        python cli/main.py sample_project/example.py
+
+    # This step reads the generated report and posts the results as a PR comment
+    - name: Comment on PR with Review Results
+      # The 'github-script' action is a lightweight way to interact with the GitHub API
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const reportPath = 'code_reviewer_report.json';
+          
+          if (!fs.existsSync(reportPath)) {
+            // This handles cases where the analyzer finds 0 issues and doesn't write a report (optional safety check)
+            console.log('Report not found, assuming zero issues or an earlier failure.');
+            return;
+          }
+
+          const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+          const issues = report.issues;
+          
+          let commentBody = '';
+
+          if (issues.length === 0) {
+            commentBody = '✨ **AI Code Review:** Found 0 code smells. Your code is clean!';
+          } else {
+            commentBody = `🚨 **AI Code Review:** Found **${issues.length}** code smell(s)! 
+                          Check the full report in the artifacts if needed.\n\n`;
+            
+            issues.forEach(issue => {
+              commentBody += `### [L${issue.line}] ${issue.type}\n`;
+              commentBody += `- **Smell:** ${issue.message}\n`;
+              commentBody += `- **Suggestion:** ${issue.suggestion}\n`;
+              
+              if (issue.autofix_status === 'Prepared') {
+                  // Inform the developer that an autofix is available
+                  commentBody += `- 🛠️ **Auto-Fix Status:** Fix available. You can run \`python cli/main.py <file> --fix\` locally.\n`;
+              }
+              commentBody += '---\n';
+            });
+          }
+
+          // Post the comment to the Pull Request
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: commentBody
+          });
