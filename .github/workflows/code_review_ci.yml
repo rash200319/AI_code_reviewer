@@ -44,15 +44,19 @@ jobs:
           python cli/main.py sample_project/example.py
 
       - name: Comment on PR with Review Results
+        if: github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            const report = fs.readFileSync('code_reviewer_report.json', 'utf8');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `### AI Code Review Results\n\`\`\`json\n${report}\n\`\`\``
-            });
-
+            try {
+              const report = fs.readFileSync('code_reviewer_report.json', 'utf8');
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: `### AI Code Review Results\n\`\`\`json\n${report}\n\`\`\``
+              });
+            } catch (error) {
+              console.log("Report file not found or error commenting:", error);
+            }
