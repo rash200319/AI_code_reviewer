@@ -26,3 +26,11 @@ async def main_async_loop():
     """An asynchronous function."""
     print("Running background task...")
     await asyncio.sleep(1)
+
+def calculate_area(radius):
+    # The number 3.14 is a "Magic Number" (should be math.pi or a constant)
+    return 3.14 * radius * radius
+
+def get_status_code():
+    # The number 200 is a "Magic Number" (should be HTTP_OK)
+    return 200
